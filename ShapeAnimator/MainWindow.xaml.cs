@@ -30,6 +30,10 @@ namespace ShapeAnimator
 
         List<GameShape> Shapes = new List<GameShape>();
 
+        List<Bullet> Bullets = new List<Bullet>();
+
+        Gun Gun = new Gun(400, 350);
+
         Circle Center = new Circle(0,0,0); // temp marker to show where the center will be
         Circle Rim = new Circle(0,0,0); // temp marker to show the rim
         Line RadialLine = new Line(); // temp marker from center to rim
@@ -40,6 +44,14 @@ namespace ShapeAnimator
             InitializeComponent();
             Timer.Interval = TimeSpan.FromSeconds(0.1);
             Timer.Tick += Timer_Tick;
+
+            Loaded += MainWindow_Loaded;
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            Gun.X = (int)(ShapeCanvas.ActualWidth / 2);
+            Gun.Y = (int)(ShapeCanvas.ActualHeight);
         }
 
         private void Timer_Tick(object? sender, EventArgs e)
@@ -117,11 +129,78 @@ namespace ShapeAnimator
                     }
                 }
             }
+            // Move bullets and remove off-screen bullets
+            for (int i = Bullets.Count - 1; i >= 0; i--)
+            {
+                Bullet b = Bullets[i];
+
+                b.X += b.TravelDirectionX * 10;
+                b.Y += b.TravelDirectionY * 10;
+
+                bool hit = false;
+
+                for (int j = Shapes.Count - 1; j >= 0; j--)
+                {
+                    GameShape s = Shapes[j];
+
+                    double distance =
+                        Math.Sqrt(
+                            (b.X - s.X) * (b.X - s.X) +
+                            (b.Y - s.Y) * (b.Y - s.Y));
+
+                    if (distance < s.Size)
+                    {
+                        Shapes.RemoveAt(j);
+
+                        hit = true;
+                        break;
+                    }
+                }
+
+                if (hit)
+                {
+                    Bullets.RemoveAt(i);
+                    continue;
+                }
+
+                if (b.Y < 0)
+                {
+                    Bullets.RemoveAt(i);
+                }
+            }
 
             RefreshScreen();
         }
 
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Left)
+            {
+                Gun.X -= 10;
+            }
 
+            if (e.Key == Key.Right)
+            {
+                Gun.X += 10;
+            }
+
+            if (e.Key == Key.Space)
+            {
+                FireBullet();
+            }
+
+            if (Gun.X < 20)
+            {
+                Gun.X = 20;
+            }
+
+            if (Gun.X > ShapeCanvas.ActualWidth - 20)
+            {
+                Gun.X = (int)ShapeCanvas.ActualWidth - 20;
+            }
+
+            RefreshScreen();
+        }
         private void RedButton_Click(object sender, RoutedEventArgs e)
         {
             CurrentColor = Brushes.Red;
@@ -152,7 +231,19 @@ namespace ShapeAnimator
 
         private void ShotButton_Click(object sender, RoutedEventArgs e)
         {
+            FireBullet();
 
+            RefreshScreen();
+        }
+
+        private void FireBullet()
+        {
+            Bullet b = new Bullet();
+
+            b.X = Gun.X;
+            b.Y = Gun.Y - 20;
+
+            Bullets.Add(b);
         }
 
         private void RectangleButton_Click(object sender, RoutedEventArgs e)
@@ -189,6 +280,12 @@ namespace ShapeAnimator
                     DrawTriangle((GameTriangle)s);
                 }
             }
+            foreach (Bullet b in Bullets)
+            {
+                DrawBullet(b);
+            }
+
+            DrawGun(Gun);
         }
 
         private void DrawCircle(GameShape s)
@@ -256,6 +353,37 @@ namespace ShapeAnimator
             t.UnderlyingTriangle = triangle;
 
             ShapeCanvas.Children.Add(triangle);
+        }
+
+        private void DrawBullet(Bullet b)
+        {
+            Ellipse bullet = new Ellipse();
+
+            bullet.Fill = Brushes.White;
+
+            bullet.Width = 2.5;
+            bullet.Height = 10;
+
+            Canvas.SetLeft(bullet, b.X - 2.5);
+            Canvas.SetTop(bullet, b.Y);
+
+            ShapeCanvas.Children.Add(bullet);
+        }
+
+        private void DrawGun(Gun g)
+        {
+            System.Windows.Shapes.Rectangle barrel =
+                new System.Windows.Shapes.Rectangle();
+
+            barrel.Fill = Brushes.Gray;
+
+            barrel.Width = 40;
+            barrel.Height = 15;
+
+            Canvas.SetLeft(barrel, g.X - 20);
+            Canvas.SetTop(barrel, g.Y - 7.5);
+
+            ShapeCanvas.Children.Add(barrel);
         }
 
         private void RefreshRim()

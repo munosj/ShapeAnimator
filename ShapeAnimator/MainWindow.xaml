@@ -1,4 +1,5 @@
 ﻿<Window x:Class="ShapeAnimator.MainWindow"
+        KeyDown="Window_KeyDown"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -18,17 +19,17 @@
                 MouseMove="ShapeCanvas_MouseMove"></Canvas>
         
         <WrapPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Button Width="75" Margin="0 0 10 0" Click="RectangleButton_Click">Rectangle</Button>
-            <Button Width="75" Margin="0 0 10 0" Click="TriangleButton_Click">Triangle</Button>
-            <Button Width="75" Margin="0 0 10 0" Click="CircleButton_Click">Circle</Button>
-            <Button Width="75" Margin="0 0 10 0" Click="ShotButton_Click">Shot</Button>
-            <Button Width="75" Click="StepButton_Click">Step</Button>
-            <Button Width="75" Click="PlayButton_Click">Play</Button>
-            <Button Width="75" Margin="0 0 10 0" Click="PauseButton_Click">Pause</Button>
-            <Button Width="35" Click="RedButton_Click">Red</Button>
-            <Button Width="35" Click="BlueButton_Click">Blue</Button>
-            <Button Width="35" Click="GreenButton_Click">Green</Button>
-            <Button Width="45" Click="YellowButton_Click">Yellow</Button>
+            <Button Width="75" Focusable="False" Click="RectangleButton_Click">Rectangle</Button>
+            <Button Width="75" Focusable="False" Click="TriangleButton_Click">Triangle</Button>
+            <Button Width="75" Margin="0 0 10 0" Focusable="False" Click="CircleButton_Click">Circle</Button>
+            <Button Width="75" Background="Gray" Margin="0 0 10 0" Focusable="False" Click="ShotButton_Click">Shot</Button>
+            <Button Width="75" Focusable="False" Click="StepButton_Click">Step</Button>
+            <Button Width="75" Focusable="False" Click="PlayButton_Click">Play</Button>
+            <Button Width="75" Margin="0 0 10 0" Focusable="False" Click="PauseButton_Click">Pause</Button>
+            <Button Width="35" Background="Red" Focusable="False" Click="RedButton_Click">Red</Button>
+            <Button Width="35" Background="Blue" Focusable="False" Click="BlueButton_Click">Blue</Button>
+            <Button Width="35" Background="Green" Focusable="False" Click="GreenButton_Click">Green</Button>
+            <Button Width="45" Background="Yellow" Focusable="False" Click="YellowButton_Click">Yellow</Button>
         </WrapPanel>
     </Grid>
 </Window>
